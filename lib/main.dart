@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:wallpaper_app/providers/wallpaper_provider.dart';
+import 'package:wallpaper_app/bloc/wallpaper_bloc.dart';
 import 'package:wallpaper_app/utils/colors.dart';
 import 'package:wallpaper_app/view/screens/splash.dart';
 
@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => WallpaperProvider(),
+    return BlocProvider(
+      create: (context) => WallpaperBloc(),
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

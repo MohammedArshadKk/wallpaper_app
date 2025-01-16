@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper_app/providers/wallpaper_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wallpaper_app/bloc/wallpaper_bloc.dart';
+import 'package:wallpaper_app/model/wallpaper_model.dart';
 import 'package:wallpaper_app/utils/colors.dart';
 import 'package:wallpaper_app/view/widgets/custom_container.dart';
 import 'package:wallpaper_app/view/widgets/custom_text.dart';
 
 class BannerWidget extends StatelessWidget {
-  const BannerWidget({super.key, required this.provider});
-  final WallpaperProvider provider;
+  const BannerWidget({super.key, required this.wallpapers});
+  final List<WallpaperModel> wallpapers;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,7 +25,7 @@ class BannerWidget extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      provider.wallpapers[0].imageUrl,
+                      wallpapers[0].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -61,8 +63,8 @@ class BannerWidget extends StatelessWidget {
                           );
                         },
                       );
-                      provider
-                          .downloadImage(provider.wallpapers[0].downloadLink);
+                      context.read<WallpaperBloc>().add(DownloadWallpaperEvent(
+                          imageUrl: wallpapers[0].downloadLink));
                     },
                   ),
                 ),

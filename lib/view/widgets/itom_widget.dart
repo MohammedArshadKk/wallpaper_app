@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wallpaper_app/bloc/wallpaper_bloc.dart';
 import 'package:wallpaper_app/model/wallpaper_model.dart';
-import 'package:wallpaper_app/providers/wallpaper_provider.dart';
 import 'package:wallpaper_app/utils/colors.dart';
 import 'package:wallpaper_app/view/widgets/custom_text.dart';
 
 class ItomWidget extends StatelessWidget {
-  const ItomWidget({super.key, required this.data, required this.provider});
+  const ItomWidget({
+    super.key,
+    required this.data,
+  });
   final WallpaperModel data;
-  final WallpaperProvider provider;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -64,7 +68,9 @@ class ItomWidget extends StatelessWidget {
                     );
                   },
                 );
-                provider.downloadImage(data.downloadLink);
+                context
+                    .read<WallpaperBloc>()
+                    .add(DownloadWallpaperEvent(imageUrl: data.downloadLink));
               },
             ),
           ),

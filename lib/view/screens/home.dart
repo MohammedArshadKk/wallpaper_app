@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wallpaper_app/providers/wallpaper_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wallpaper_app/bloc/wallpaper_bloc.dart';
 import 'package:wallpaper_app/utils/colors.dart';
-import 'package:wallpaper_app/view/widgets/banner_widget.dart';
 import 'package:wallpaper_app/view/widgets/custom_container.dart';
-import 'package:wallpaper_app/view/widgets/custom_text.dart';
 import 'package:wallpaper_app/view/widgets/grid_widget.dart';
 import 'package:wallpaper_app/view/widgets/loading_widgets.dart';
 
@@ -22,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     scrollController.addListener(onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<WallpaperProvider>(context, listen: false).getWallpapers();
+      context.read<WallpaperBloc>().add(GetwallpaperEvent());
     });
     super.initState();
   }
@@ -37,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void onScroll() {
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
-      Provider.of<WallpaperProvider>(context, listen: false).getWallpapers();
+      context.read<WallpaperBloc>().add(GetwallpaperEvent());
     }
   }
 
@@ -57,19 +55,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: Consumer<WallpaperProvider>(
-              builder: (context, provider, child) {
-                if (provider.wallpapers.isEmpty && provider.isLoading) {
+            child: BlocBuilder<WallpaperBloc, WallpaperState>(
+              builder: (context, state) {
+                if (state is LoadingState) {
                   return const LoadingWidget();
                 }
-                if (provider.wallpapers.isEmpty && !provider.isLoading) {
-                  return const Center(
-                    child: Text('No wallpapers found'),
+                if (state is WallpapersLoadedState) {
+                  return GridWidget(
+                    wallpapers: state.wallpapers,
+                    scrollController: scrollController,
+                    state: state,
                   );
                 }
-                return GridWidget(
-                    provider: provider,
-                    scrollController: scrollController);
+                if (state is ErrorState) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               },
             ),
           ),

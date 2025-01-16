@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:wallpaper_app/bloc/wallpaper_bloc.dart';
 import 'package:wallpaper_app/model/wallpaper_model.dart';
-import 'package:wallpaper_app/providers/wallpaper_provider.dart';
 import 'package:wallpaper_app/view/widgets/banner_widget.dart';
 import 'package:wallpaper_app/view/widgets/itom_widget.dart';
 
 class GridWidget extends StatelessWidget {
   const GridWidget({
     super.key,
-    required this.provider,
-    required this.scrollController,
+    required this.wallpapers,
+    required this.scrollController, required this.state,
   });
-  final WallpaperProvider provider;
+  final List<WallpaperModel> wallpapers;
   final ScrollController scrollController;
+  final WallpaperState state;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        BannerWidget(provider: provider),
+        BannerWidget(wallpapers: wallpapers),
         Expanded(
           child: Stack(
             children: [
@@ -28,21 +30,19 @@ class GridWidget extends StatelessWidget {
                   gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                   ),
-                  itemCount: provider.wallpapers.length,
+                  itemCount: wallpapers.length,
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                   itemBuilder: (context, index) {
-                    List<WallpaperModel> res =
-                        provider.wallpapers.reversed.toList();
+                    List<WallpaperModel> res = wallpapers.reversed.toList();
                     final WallpaperModel data = res[index];
                     return ItomWidget(
                       data: data,
-                      provider: provider,
                     );
                   },
                 ),
               ),
-              if (provider.isLoading)
+              if (state is LoadingState)
                 Positioned(
                   bottom: 0,
                   left: 0,
