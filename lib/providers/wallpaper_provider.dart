@@ -1,8 +1,6 @@
 import 'dart:developer';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:get/get.dart';
 import 'package:wallpaper_app/model/wallpaper_model.dart';
 import 'package:wallpaper_app/services/api_service.dart';
 
@@ -12,11 +10,9 @@ class WallpaperProvider extends ChangeNotifier {
   List<WallpaperModel> wallpapers = [];
   bool hasMoreData = true;
   int currentIndex = 1;
-  final Dio _dio = Dio();
-  bool isdownloaded = false;
+  bool isdownloading = false;
   Future<void> getWallpapers() async {
     if (isLoading || !hasMoreData) return;
-
     try {
       isLoading = true;
       notifyListeners();
@@ -31,7 +27,7 @@ class WallpaperProvider extends ChangeNotifier {
         currentIndex++;
       }
     } catch (e) {
-      log('Error loading wallpapers: $e');
+      log('$e');
     } finally {
       isLoading = false;
       notifyListeners();
@@ -45,18 +41,26 @@ class WallpaperProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void downloadImage(String url, String fileName) async {
-    final dio = Dio();
-    final dir = await getApplicationDocumentsDirectory();
-    final filePath = '${dir.path}/$fileName.jpg';
-
+  Future<void> downloadImage(String url) async {
     try {
-      await dio.download(url, filePath);
-      isdownloaded = true;
-      log('Downloaded: $filePath');
-      notifyListeners(); 
+      isdownloading = true;
+      notifyListeners();
+      await apiService.downloadAndSaveImage(url);
+      Get.back();
+      Get.snackbar(
+        'Success',
+        'Image Downloaded Successfully',
+        backgroundColor: Colors.green,
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 2),
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(10),
+      );
     } catch (e) {
-      log('Error: $e');
+      log(e.toString());
+    } finally {
+      isdownloading = false;
+      notifyListeners();
     }
   }
 }

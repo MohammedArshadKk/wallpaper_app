@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallpaper_app/model/wallpaper_model.dart';
 import 'package:wallpaper_app/providers/wallpaper_provider.dart';
+import 'package:wallpaper_app/utils/colors.dart';
+import 'package:wallpaper_app/view/widgets/custom_text.dart';
 
 class ItomWidget extends StatelessWidget {
   const ItomWidget({super.key, required this.data, required this.provider});
-final WallpaperModel  data;
-final WallpaperProvider provider;
+  final WallpaperModel data;
+  final WallpaperProvider provider;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -44,20 +46,26 @@ final WallpaperProvider provider;
                 Icons.download,
                 color: Colors.white,
               ),
-              onPressed: () {
-                provider.downloadImage(data.downloadLink,
-                    DateTime.now().microsecondsSinceEpoch.toString());
-                if (provider.isdownloaded) {
-                  Get.snackbar(
-                    'Success',
-                    'Image Downloaded Successfully',
-                    backgroundColor: Colors.green,
-                    snackPosition: SnackPosition.TOP,
-                    duration: const Duration(seconds: 2),
-                    colorText: Colors.white,
-                    margin: const EdgeInsets.all(10),
-                  );
-                }
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                        CustomText(
+                          text: 'Downloading...',
+                          textAlign: TextAlign.center,
+                          color: AppColors.primaryColor,
+                        )
+                      ],
+                    );
+                  },
+                );
+                provider.downloadImage(data.downloadLink);
               },
             ),
           ),
