@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:wallpaper_app/model/wallpaper_model.dart';
 import 'package:wallpaper_app/providers/wallpaper_provider.dart';
 import 'package:wallpaper_app/utils/colors.dart';

@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,7 +29,7 @@ class ApiService {
   }
 
   Future<String> downloadAndSaveImage(String imageUrl) async {
-    final permission = PhotoManager.requestPermissionExtend();
+    await PhotoManager.requestPermissionExtend();
     final Directory? downloadDir = await getExternalStorageDirectory();
     final fileName = '${DateTime.now().microsecondsSinceEpoch}';
     final filePath = path.join(downloadDir!.path, fileName);
@@ -44,6 +43,7 @@ class ApiService {
     final File imageFile = File(filePath);
     final asset = PhotoManager.editor
         .saveImage(await imageFile.readAsBytes(), filename: fileName);
+    log(asset.toString());
     return filePath;
   }
 }

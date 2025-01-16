@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_F) => WallpaperProvider(),
+      create: (_) => WallpaperProvider(),
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

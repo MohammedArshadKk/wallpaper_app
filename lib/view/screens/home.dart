@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/wallpaper_provider.dart';
 import 'package:wallpaper_app/utils/colors.dart';
+import 'package:wallpaper_app/view/widgets/banner_widget.dart';
 import 'package:wallpaper_app/view/widgets/custom_container.dart';
 import 'package:wallpaper_app/view/widgets/custom_text.dart';
 import 'package:wallpaper_app/view/widgets/grid_widget.dart';
@@ -67,7 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
                 return GridWidget(
-                    provider: provider, scrollController: scrollController);
+                    provider: provider,
+                    scrollController: scrollController);
               },
             ),
           ),
